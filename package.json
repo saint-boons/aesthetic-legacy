@@ -21,7 +21,7 @@
   "dependencies": {
     "axios": "^0.21.1",
     "better-sqlite3": "^7.4.1",
-    "chalk": "^4.1.0",
+    "chalk": "^4.1.1",
     "discord.js": "^12.5.1",
     "discord.js-commando": "git+https://github.com/discordjs/commando.git",
     "dotenv": "^10.0.0",
