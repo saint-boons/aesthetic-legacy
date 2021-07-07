@@ -1,0 +1,156 @@
+#####################################################################################################################################################################################
+#####################################################################################################################################################################################
+##                                                                                                                                                                                 ##
+##       ___           ___           ___           ___           ___           ___           ___                       ___                    ___           ___           ___      ##
+##      /\  \         /\  \         /\  \         /\  \         /\__\         /\  \         /\  \          ___        /\  \                  /\  \         /\  \         /\  \     ##
+##     /::\  \       /::\  \       /::\  \        \:\  \       /:/  /        /::\  \        \:\  \        /\  \      /::\  \                /::\  \       /::\  \        \:\  \    ##
+##    /:/\:\  \     /:/\:\  \     /:/\ \  \        \:\  \     /:/__/        /:/\:\  \        \:\  \       \:\  \    /:/\:\  \              /:/\:\  \     /:/\:\  \        \:\  \   ##
+##   /::\~\:\  \   /::\~\:\  \   _\:\~\ \  \       /::\  \   /::\  \ ___   /::\~\:\  \       /::\  \      /::\__\  /:/  \:\  \            /::\~\:\__\   /:/  \:\  \       /::\  \  ##
+##  /:/\:\ \:\__\ /:/\:\ \:\__\ /\ \:\ \ \__\     /:/\:\__\ /:/\:\  /\__\ /:/\:\ \:\__\     /:/\:\__\  __/:/\/__/ /:/__/ \:\__\          /:/\:\ \:|__| /:/__/ \:\__\     /:/\:\__\ ##
+##  \/__\:\/:/  / \:\~\:\ \/__/ \:\ \:\ \/__/    /:/  \/__/ \/__\:\/:/  / \:\~\:\ \/__/    /:/  \/__/ /\/:/  /    \:\  \  \/__/          \:\~\:\/:/  / \:\  \ /:/  /    /:/  \/__/ ##
+##       \::/  /   \:\ \:\__\    \:\ \:\__\     /:/  /           \::/  /   \:\ \:\__\     /:/  /      \::/__/      \:\  \                 \:\ \::/  /   \:\  /:/  /    /:/  /      ##
+##       /:/  /     \:\ \/__/     \:\/:/  /     \/__/            /:/  /     \:\ \/__/     \/__/        \:\__\       \:\  \                 \:\/:/  /     \:\/:/  /     \/__/       ##
+##      /:/  /       \:\__\        \::/  /                      /:/  /       \:\__\                     \/__/        \:\__\                 \::/__/       \::/  /                  ##
+##      \/__/         \/__/         \/__/                       \/__/         \/__/                                   \/__/                  ~~            \/__/                   ##
+##                                                                                                                                                                                 ##
+#####################################################################################################################################################################################
+#####################################################################################################################################################################################
+
+############################################
+#                                          #
+#   Need Help?                             #
+#                                          #
+############################################
+# Check out the documetation at            #
+# https://docs.aesthetic-bot.com           #
+############################################
+
+############################################
+#                                          #
+#   Bot Config                             #
+#                                          #
+############################################
+# Bot Token in an .env file for safety...  #
+# Learn more in README.md                  #
+############################################
+Locale: en-gb
+
+OwnerID: '285358176096747522'
+ServerID: '745653047996317829'
+BotName: 'Aesthetic BOT'
+Prefix: '-'
+
+Embeds:
+  Color:
+    Default: WHITE
+    Warn: ORANGE
+    Error: RED
+  Footer:
+    Text: Aesthetic BOT
+    Icon: https://i.imgur.com/PQY5oE6.png
+
+Moderation:
+  AutoMod:
+    - [2, 'warn', 'tempmute', '30m']
+    - [3, 'warn', 'mute']
+    - [5, 'warn', 'kick']
+    - [2, 'kick', 'tempban', '7d']
+    - [2, 'tempban', 'ban']
+    # [ammount, 'trigger', 'action', 'length']
+  Mute:
+    Role: 'Muted'
+    LowerRolesOnly: true
+  Warn:
+    CanWarnRolesAbove:
+      Bot: true
+      User: false
+      UserSame: false
+
+Currency:
+  Rate:
+    Symbols: 
+      - EUR
+      - USD
+      - CHF
+      - GBP
+      - CAD
+      - JPY
+      - CNY
+      - INR
+  Convert:
+    MinimumAmount: 0.01
+    MaximumAmount: 1.00E+11 #Represents 100 000 000 000
+
+Meme:
+  DefaultSubreddit: memes
+  ValidSubreddits:
+    - memes
+    - meme
+    - dankmemes
+    - goodanimememes
+    - animememes
+    - christianmemes
+    - edgymemes
+    - memeeconomy
+    - minecraftmemes
+    - nukedmemes
+    - surrealmemes
+    - jojomemes
+
+Reddit:
+  DefaultType: random
+  BannedSubreddits:
+    Enabled: false
+    List: # Note: NSFW subredits are automaticly filtered here, they can only be shown in NSFW channels.
+      - something
+
+Logs:
+  Channel: logs
+  Enabled:
+    channelCreate: true
+    channelDelete: true
+    channelPinsUpdate: true
+    emojiCreate: true
+    emojiDelete: true
+    emojiUpdate: true
+    inviteCreate: true
+    inviteDelete: true
+    roleCreate: true
+    roleDelete: true
+    roleUpdate: true
+
+############################################
+#                                          #
+#   Warning! The eval command is a very    #
+#   risky command, it should only be on    #
+#   if you know what you are doing!        #
+#                                          #
+############################################
+Eval:
+  Enabled: false
+# The owner ID can be changed at the beginning of this file
+# This command allows to run javascript straight from a text channel!
+
+############################################
+#                                          #
+#   Console Customisation                  #
+#                                          #
+############################################
+ConsoleStyle:
+  Prefix:
+    Info: INFO >
+    Warn: WARN >
+    Error: ERROR >
+    Mod: MOD >
+    Log: LOG >
+  Color:
+    # In modules/chalk.js
+
+# [!] Not implemented yet
+ConsoleOutput:
+  Log:
+    Messages: false
+    VoiceChannels: false
+    CommandsRan: false
+    InvalidCommands: false
+    OtherActions: true
