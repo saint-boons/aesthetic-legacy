@@ -1,0 +1,17 @@
+dependecies:
+- any: ['package.json', 'package-lock.json']
+
+modules:
+- modules/*
+
+commands:
+- commands/*
+
+events:
+- modules/events/*
+
+configuration:
+- config.yaml
+
+docs/ci:
+- any: ['.github/*', '.gitignore', '.gitattributes', 'CODE_OF_CONDUCT.md', 'LICENSE', 'README.md', 'SCURITY.md']
