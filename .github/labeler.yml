@@ -2,16 +2,19 @@ dependecies:
 - any: ['package.json', 'package-lock.json']
 
 modules:
-- modules/*
+- any: ['modules/**/*']
 
 commands:
-- commands/*
+- any: ['commands/**/*']
 
 events:
-- modules/events/*
+- any: ['modules/events/*']
 
 configuration:
-- config.yaml
+- any: ['config.yaml']
 
-docs/ci:
-- any: ['.github/*', '.gitignore', '.gitattributes', 'CODE_OF_CONDUCT.md', 'LICENSE', 'README.md', 'SCURITY.md']
+documentation:
+- any: ['CODE_OF_CONDUCT.md', 'LICENSE', 'README.md', 'SCURITY.md']
+
+ci:
+- any: ['.github/*', '.gitignore', '.gitattributes']
