@@ -34,11 +34,13 @@ add = (type, id, serverID, userID, reason) => {
         case 'kick':
             if (!member.kickable) return { sucess: false, reason: `User ${member} cannot be kicked!` }
             member.kick({ reason: `${reason}` }).catch(err => { return { sucess: false, reason: `Unknown.` } })
+            db.update('moderation', ['count'], [0], `serverID = '${member.guild.id}' AND userID = '${member.user.id}' AND (type = 'warn' OR type = 'tempmute' OR type = 'mute')`)
             return { sucess: true, id: id }
         case 'ban':
         case 'tempban':
             if (!member.bannable) return { sucess: false, reason: `User ${member} cannot be banned!` }
             member.ban({ reason: `${reason}` }).catch(err => { return { sucess: false, reason: `Unknown.` } })
+            db.update('moderation', ['count'], [0], `serverID = '${member.guild.id}' AND userID = '${member.user.id}' AND (type = 'warn' OR type = 'tempmute' OR type = 'mute' OR 'kick')`)
             return { sucess: true, id: id }
         default:
             return { sucess: false, reason: `Unknown.` }
@@ -126,6 +128,7 @@ module.exports.remove = (type, serverID, userID, removerID, reason) => {
 
 module.exports.run = () => {
     db.create('moderation', 'id TEXT, time TIMESTAMP, active BIT, count BIT, type TEXT, serverID TEXT, userID TEXT, authorID TEXT, reason TEXT, length TIMESTAMP, runAt TIMESTAMP, removedTime TIMESTAMP, removerID TEXT, removeReason TEXT')
+
     let table = db.select('moderation', '*', 'all', `active = 1`)
     if (table.length === 0) return
     for (run of table) {
@@ -138,6 +141,7 @@ module.exports.run = () => {
 
 module.exports.check = (serverID, userID) => {
     db.create('moderation', 'id TEXT, time TIMESTAMP, active BIT, count BIT, type TEXT, serverID TEXT, userID TEXT, authorID TEXT, reason TEXT, length TIMESTAMP, runAt TIMESTAMP, removedTime TIMESTAMP, removerID TEXT, removeReason TEXT')
+
     let table = db.select('moderation', '*', 'all', `count = 1 AND serverID = '${serverID}' AND userID = '${userID}'`)
     let list = {
         warns: 0,
@@ -219,6 +223,136 @@ module.exports.check = (serverID, userID) => {
     }
 }
 
-module.exports.query = () => {
+module.exports.query = (serverID, userID) => {
+    db.create('moderation', 'id TEXT, time TIMESTAMP, active BIT, count BIT, type TEXT, serverID TEXT, userID TEXT, authorID TEXT, reason TEXT, length TIMESTAMP, runAt TIMESTAMP, removedTime TIMESTAMP, removerID TEXT, removeReason TEXT')
 
+    let count = {
+        warns: 0,
+        tempmutes: 0,
+        mutes: 0,
+        kicks: 0,
+        tempbans: 0,
+        bans: 0,
+    }
+    let details = {
+        warns: {},
+        tempmutes: {},
+        mutes: {},
+        kicks: {},
+        tempbans: {},
+        bans: {},
+    }
+    let table = db.select('moderation', '*', 'all', `serverID = '${serverID}' AND userID = '${userID}'`)
+    if (!table) return { sucess: false, reason: `No records was found for member ${tools.getUser(userID)} in ${tools.getGuild(serverID)}` }
+    for (record of table) {
+        switch (record.type) {
+            case 'warn':
+                details.warns[count.warns] = {
+                    id: record.id,
+                    time: record.time,
+                    active: record.active, 
+                    count: record.count,
+                    type: record.type,
+                    serverID: record.serverID,
+                    userID: record.userID,
+                    authorID: record.authorID,
+                    reason: record.reason,
+                    length: record.length,
+                    runAt: record.runAt
+                }
+                count.warns += 1
+                break
+            case 'tempmute':
+                details.tempmutes[count.tempmutes] = {
+                    id: record.id,
+                    time: record.time,
+                    active: record.active, 
+                    count: record.count,
+                    type: record.type,
+                    serverID: record.serverID,
+                    userID: record.userID,
+                    authorID: record.authorID,
+                    reason: record.reason,
+                    length: record.length,
+                    runAt: record.runAt
+                }
+                count.tempmutes += 1
+                break
+            case 'mute':
+                details.mutes[count.mutes] = {
+                    id: record.id,
+                    time: record.time,
+                    active: record.active, 
+                    count: record.count,
+                    type: record.type,
+                    serverID: record.serverID,
+                    userID: record.userID,
+                    authorID: record.authorID,
+                    reason: record.reason,
+                    length: record.length,
+                    runAt: record.runAt
+                }
+                count.mutes += 1
+                break
+            case 'kick':
+                details.kicks[count.kicks] = {
+                    id: record.id,
+                    time: record.time,
+                    active: record.active, 
+                    count: record.count,
+                    type: record.type,
+                    serverID: record.serverID,
+                    userID: record.userID,
+                    authorID: record.authorID,
+                    reason: record.reason,
+                    length: record.length,
+                    runAt: record.runAt
+                }
+                count.kicks += 1
+                break
+            case 'tempban':
+                details.tempbans[count.tempbans] = {
+                    id: record.id,
+                    time: record.time,
+                    active: record.active, 
+                    count: record.count,
+                    type: record.type,
+                    serverID: record.serverID,
+                    userID: record.userID,
+                    authorID: record.authorID,
+                    reason: record.reason,
+                    length: record.length,
+                    runAt: record.runAt
+                }
+                count.tempbans += 1
+                break
+            case 'ban':
+                details.bans[count.bans] = {
+                    id: record.id,
+                    time: record.time,
+                    active: record.active, 
+                    count: record.count,
+                    type: record.type,
+                    serverID: record.serverID,
+                    userID: record.userID,
+                    authorID: record.authorID,
+                    reason: record.reason,
+                    length: record.length,
+                    runAt: record.runAt
+                }
+                count.bans += 1
+                break
+            default:
+                break
+        }
+    }
+    return { count, details }
+}
+
+module.exports.fetch = (serverID, modID) => {
+    db.create('moderation', 'id TEXT, time TIMESTAMP, active BIT, count BIT, type TEXT, serverID TEXT, userID TEXT, authorID TEXT, reason TEXT, length TIMESTAMP, runAt TIMESTAMP, removedTime TIMESTAMP, removerID TEXT, removeReason TEXT')
+
+    let table = db.select('moderation', '*', 'get', `id = '${modID}' AND serverID = '${serverID}'`)
+    if (!table) return { sucess: false, reason: `No records was found for modID ${modID} in ${tools.getGuild(serverID)}` }
+    return table
 }
