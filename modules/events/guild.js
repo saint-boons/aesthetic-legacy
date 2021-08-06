@@ -6,7 +6,7 @@ const db = require('@modules/db.js')
 
 module.exports = (client) => {
     client.on('guildBanAdd', (guild, user) => {
-        db.update('moderation', ['count'], [0], `serverID = '${member.guild.id}' AND userID = '${member.user.id}' AND (type = 'warn' OR type = 'tempmute' OR type = 'mute')`)
+        //
     })
 
     client.on('guildBanRemove', (guild, user) => {
