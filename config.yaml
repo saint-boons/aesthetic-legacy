@@ -1,20 +1,13 @@
-#####################################################################################################################################################################################
-#####################################################################################################################################################################################
-##                                                                                                                                                                                 ##
-##       ___           ___           ___           ___           ___           ___           ___                       ___                    ___           ___           ___      ##
-##      /\  \         /\  \         /\  \         /\  \         /\__\         /\  \         /\  \          ___        /\  \                  /\  \         /\  \         /\  \     ##
-##     /::\  \       /::\  \       /::\  \        \:\  \       /:/  /        /::\  \        \:\  \        /\  \      /::\  \                /::\  \       /::\  \        \:\  \    ##
-##    /:/\:\  \     /:/\:\  \     /:/\ \  \        \:\  \     /:/__/        /:/\:\  \        \:\  \       \:\  \    /:/\:\  \              /:/\:\  \     /:/\:\  \        \:\  \   ##
-##   /::\~\:\  \   /::\~\:\  \   _\:\~\ \  \       /::\  \   /::\  \ ___   /::\~\:\  \       /::\  \      /::\__\  /:/  \:\  \            /::\~\:\__\   /:/  \:\  \       /::\  \  ##
-##  /:/\:\ \:\__\ /:/\:\ \:\__\ /\ \:\ \ \__\     /:/\:\__\ /:/\:\  /\__\ /:/\:\ \:\__\     /:/\:\__\  __/:/\/__/ /:/__/ \:\__\          /:/\:\ \:|__| /:/__/ \:\__\     /:/\:\__\ ##
-##  \/__\:\/:/  / \:\~\:\ \/__/ \:\ \:\ \/__/    /:/  \/__/ \/__\:\/:/  / \:\~\:\ \/__/    /:/  \/__/ /\/:/  /    \:\  \  \/__/          \:\~\:\/:/  / \:\  \ /:/  /    /:/  \/__/ ##
-##       \::/  /   \:\ \:\__\    \:\ \:\__\     /:/  /           \::/  /   \:\ \:\__\     /:/  /      \::/__/      \:\  \                 \:\ \::/  /   \:\  /:/  /    /:/  /      ##
-##       /:/  /     \:\ \/__/     \:\/:/  /     \/__/            /:/  /     \:\ \/__/     \/__/        \:\__\       \:\  \                 \:\/:/  /     \:\/:/  /     \/__/       ##
-##      /:/  /       \:\__\        \::/  /                      /:/  /       \:\__\                     \/__/        \:\__\                 \::/__/       \::/  /                  ##
-##      \/__/         \/__/         \/__/                       \/__/         \/__/                                   \/__/                  ~~            \/__/                   ##
-##                                                                                                                                                                                 ##
-#####################################################################################################################################################################################
-#####################################################################################################################################################################################
+############################################################################
+##      _          _   _        _   _      ___  ___ _____                 ##
+##     /_\  ___ __| |_| |_  ___| |_(_)__  | _ )/ _ \_   _|                ##
+##    / _ \/ -_|_-<  _| ' \/ -_)  _| / _| | _ \ (_) || |                  ##
+##   /_/_\_\___/__/\__|_||_\___|\__|_\__| |___/\___/ |_|__  ___  ___      ##
+##   | _ )_  _    /_\  ___ __| |_| |_  ___| |_(_)__   / _ \| _ \/ __|     ##
+##   | _ \ || |  / _ \/ -_|_-<  _| ' \/ -_)  _| / _| | (_) |   / (_ |_    ##
+##   |___/\_, | /_/ \_\___/__/\__|_||_\___|\__|_\__|  \___/|_|_\\___(_)   ##
+##        |__/                                                            ##
+############################################################################
 
 ############################################
 #                                          #
@@ -33,80 +26,92 @@
 # Bot Token in an .env file for safety...  #
 # Learn more in README.md                  #
 ############################################
-Locale: en-gb
+locale: en-gb
 
-OwnerID: '285358176096747522'
-ServerID: '745653047996317829'
-BotName: 'Aesthetic BOT'
-Prefix: '-'
+############################################
+# Where is the prefix setting?             #
+# With Discord.js v13 we have decided to   #
+# only support SLASH (/) commands.         #
+############################################
 
-Embeds:
-  Color:
-    Default: WHITE
-    Warn: ORANGE
-    Error: RED
-  Footer:
-    Text: Aesthetic BOT
-    Icon: https://i.imgur.com/PQY5oE6.png
+embed:
+  color:
+    default: WHITE
+    warn: ORANGE
+    error: RED
+  footer:
+    text: Aesthetic BOT
+    icon: https://i.imgur.com/PQY5oE6.png
 
-Moderation:
-  AutoMod:
-    - [2, 'warn', 'tempmute', '30m']
-    - [3, 'warn', 'mute']
-    - [5, 'warn', 'kick']
-    - [2, 'kick', 'tempban', '7d']
-    - [2, 'tempban', 'ban']
-    # [ammount, 'trigger', 'action', 'length']
-  Mute:
-    Role: 'Muted'
-    LowerRolesOnly: true
-  Warn:
-    CanWarnRolesAbove:
-      Bot: true
-      User: false
-      UserSame: false
+# GOING TO IMPLEMENT WITH /settings COMMAND
+#Moderation:
+#  AutoMod:
+#    - [2, 'warn', 'tempmute', '30m']
+#    - [3, 'warn', 'mute']
+#    - [5, 'warn', 'kick']
+#    - [2, 'kick', 'tempban', '7d']
+#    - [2, 'tempban', 'ban']
+#    # [ammount, 'trigger', 'action', 'length']
+#  Mute:
+#    Role: 'Muted'
+#    LowerRolesOnly: true
+#  Warn:
+#    CanWarnRolesAbove:
+#      Bot: true
+#      User: false
+#      UserSame: false
 
-Currency:
-  Rate:
-    Symbols: 
-      - EUR
-      - USD
-      - CHF
-      - GBP
-      - CAD
-      - JPY
-      - CNY
-      - INR
-  Convert:
-    MinimumAmount: 0.01
-    MaximumAmount: 1.00E+11 #Represents 100 000 000 000
+status:
+  interval: 60000
+  ordered: false
+  list: [
+    { status: 'online', type: 'LISTENING', name: 'Kanye West'},
+    { status: 'online', type: 'LISTENING', name: 'new commands'},
+    { status: 'online', type: 'LISTENING', name: 'my master'},
+    { status: 'online', type: 'LISTENING', name: 'mods'},
+    { status: 'online', type: 'WATCHING', name: 'members'},
+    { status: 'online', type: 'WATCHING', name: 'people burn'},
+  ]
 
-Meme:
-  DefaultSubreddit: memes
-  ValidSubreddits:
+currency:
+  symbols: 
+    - EUR
+    - USD
+    - CHF
+    - GBP
+    - CAD
+    - JPY
+    - CNY
+    - INR
+  amount: 
+    min: 0.01
+    max: 1.00E+12 #Represents 1 000 000 000 000
+
+meme:
+  defaultSubreddit: memes
+  validSubreddits:
     - memes
     - meme
     - dankmemes
     - goodanimememes
     - animememes
     - christianmemes
-    - edgymemes
     - memeeconomy
     - minecraftmemes
     - nukedmemes
     - surrealmemes
     - jojomemes
 
-Reddit:
-  DefaultType: random
-  BannedSubreddits:
-    Enabled: false
-    List: # Note: NSFW subredits are automaticly filtered here, they can only be shown in NSFW channels.
+reddit:
+  defaultType: random
+  bannedSubreddits:
+    enabled: false
+    list: # Note: NSFW subredits are automaticly filtered here, they can only be shown in NSFW channels.
       - something
 
-Logs:
-  Channel: logs
-  Enabled:
+logs:
+  channel: logs
+  enabled:
     channelCreate: true
     channelDelete: true
     channelPinsUpdate: true
@@ -126,8 +131,8 @@ Logs:
 #   if you know what you are doing!        #
 #                                          #
 ############################################
-Eval:
-  Enabled: false
+eval:
+  enabled: false
 # The owner ID can be changed at the beginning of this file
 # This command allows to run javascript straight from a text channel!
 
@@ -136,21 +141,21 @@ Eval:
 #   Console Customisation                  #
 #                                          #
 ############################################
-ConsoleStyle:
-  Prefix:
-    Info: INFO >
-    Warn: WARN >
-    Error: ERROR >
-    Mod: MOD >
-    Log: LOG >
-  Color:
-    # In modules/chalk.js
+consoleStyle:
+  prefix:
+    info: INFO >
+    warn: WARN >
+    error: ERROR >
+    mod: MOD >
+    log: LOG >
+  color:
+    # In modules/utils.js
 
 # [!] Not implemented yet
-ConsoleOutput:
-  Log:
-    Messages: false
-    VoiceChannels: false
-    CommandsRan: false
-    InvalidCommands: false
-    OtherActions: true
+consoleOutput:
+  log:
+    messages: false
+    voiceChannels: false
+    commandsRan: false
+    invalidCommands: false
+    otherActions: true

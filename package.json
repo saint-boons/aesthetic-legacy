@@ -1,7 +1,6 @@
 {
   "name": "aesthetic-bot",
-  "version": "0.3.0",
-  "description": "Aesthetic BOT, a simple yet useful bot.",
+  "version": "0.4.0-dev",
   "main": "index.js",
   "scripts": {
     "test": "npm i && nodemon --trace-warnings index.js",
@@ -9,20 +8,20 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/frenchbones/aesthetic-bot.git"
+    "url": "git+https://github.com/aesthetic-org/bot.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Aesthetic ORG.",
+  "license": "FB FAIR PUBLIC LICENSE",
   "bugs": {
-    "url": "https://github.com/frenchbones/aesthetic-bot/issues"
+    "url": "https://github.com/aesthetic-org/bot/issues"
   },
-  "homepage": "https://github.com/frenchbones/aesthetic-bot#readme",
+  "homepage": "https://aesthetic-org.com",
+  "description": "",
   "dependencies": {
+    "@discordjs/rest": "^0.1.0-canary.0",
     "axios": "^0.21.1",
     "better-sqlite3": "^7.4.3",
-    "chalk": "^4.1.2",
-    "discord.js": "^12.5.1",
+    "discord.js": "^13.0.0",
     "dotenv": "^10.0.0",
     "eslint": "^7.32.0",
     "js-yaml": "^4.1.0",

@@ -1,27 +1,20 @@
+const utils = require('@modules/utils')
 const fs = require('fs');
 const yaml = require('js-yaml');
 
-// YAML file locations
-const configYAMLFile = './config.yaml'
-
-// Get config anyways for console prefixes
-let configFileContent = fs.readFileSync(configYAMLFile, 'utf8');
-let config = yaml.load(configFileContent);
-
-
+const paths = {
+    config: './config.yaml',
+}
 
 module.exports = (file) => {
     switch (file) {
         case 'config':
             try {
-                let configFileContent = fs.readFileSync(configYAMLFile, 'utf8');
-                let config = yaml.load(configFileContent);
-                return config
+                return yaml.load(fs.readFileSync(paths.config, 'utf8'))
             } catch (err) {
-                console.log(tools.consolePrefix('custom', 'error', 'FATAL ERROR >'), err);
-                break
+                return console.log(utils.prefix('custom', 'error', 'FATAL ERROR >'), err)
             }
         default:
-            return console.log(tools.consolePrefix('custom', 'error', 'FATAL ERROR >'), tools.consoleHighlight('', `${file}`), `does not exist or isn't reconised as a YAML config/lang file`)
+            return console.log(utils.prefix('custom', 'error', 'FATAL ERROR >'), utils.highlight({ text: `${file}` }), `does not exist or isn't reconised as a YAML config/lang file`)
     }
 }

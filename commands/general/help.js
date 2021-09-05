@@ -1,116 +1,76 @@
-const fs = require("fs");
-const path = require("path");
-const loadCommands = require("@modules/load-commands");
-
-const embed = require('@modules/embed.js')
-const loadYAML = require('@modules/yaml.js')
-const config = loadYAML('config')
+const utils = require('@modules/utils')
 
 module.exports = {
-	commands: ["help"],
-	expectedArgs: 'command',
-	maxArgs: 1,
-	description: "Get a list of available commands and more info about them",
-	callback: (client, message, arguments) => {
-		const title = (str) => str.replace(/\b\S/g, (t) => t.toUpperCase());
-		if (!arguments[0]) {
-			const helpEmbed = embed('default', `Command Help`, `Here are the avaliable commands.`)
-			const commandsFiles = fs.readdirSync(path.join(__dirname, '../'));
-			const folders = commandsFiles.filter(command => !command.includes('.js'));
-			for (const folder of folders) {
-				if (folder !== '.DS_Store') {
-					const commandList = fs.readdirSync(path.join(__dirname, '../', folder));
-					const commandListFormat = commandList.join(', ').replace(/\.js/g, '').replaceAll('.DS_Store, ', '');
-					helpEmbed.addField(title(folder), `\`\`\`${commandListFormat}\`\`\``, true)
+	name: 'help',
+	description: 'Get a complete command list and usage on a specific command',
+	options: [{
+		name: 'command',
+		type: 3,
+		description: 'Command to get more details about',
+		required: false,
+	}],
+	async execute(interaction, client) {
+		if (interaction.options.getString('command')) {
+			const command = interaction.options.getString('command').toLowerCase()
+			if (!client.commands.has(command)) return await interaction.editReply({
+				embeds: [utils.embed({
+					preset: 'error',
+					title: 'Unknown Command',
+					description: `The command \`${command}\` does not exsist.`,
+				})]
+			})
+			let commandFetched = await client.commands.get(command)
+			let options = []
+			if (commandFetched.options) {
+				for (option of commandFetched.options) {
+					let required = option.required ? '*****' : ''
+					options.push(`\`${option.name}\`${required} • *${option.description}*`)
 				}
-			}
-			message.channel.send(helpEmbed);
-		} else {
-			const commands = loadCommands()
-			let allCommands = []
-			for (const command of commands) {
-				Array.prototype.push.apply(allCommands, command.commands)
-			}
-			if (allCommands.includes(arguments[0])) {
-				for (const command of commands) {
-					if (command.commands.includes(arguments[0])) {
-						// Perm check - permissions
-						let permissions = command.permissions
-						var hasPermission = false
-						if (permissions) {
-							if (typeof permissions === 'string') {
-								permissions = [permissions]
-							}
-							for (const permission of permissions) {
-								var requiredPermsForField = permissions.toString()
-								var sperator = ' | '
-								if (message.member.hasPermission(permission)) {
-									hasPermission = true
-								} else {
-									hasPermission = false
-								}
-							}
-						}
-						// Perm check - roles
-						const { guild } = message
-						let requiredRoles = command.requiredRoles
-						var hasRequiredRole = false
-						if (requiredRoles) {
-							if (typeof requiredRoles === 'string') {
-								requiredRoles = [requiredRoles]
-							}
-							for (const requiredRole of requiredRoles) {
-								const role = message.guild.roles.cache.find(role => role.name === requiredRole);
-								var requiredRolesForField = requiredRoles.toString()
-								if (message.member.roles.cache.has(role.id)) {
-									var hasRequiredRole = true
-								} else {
-									var hasRequiredRole = false
-								}
-							}
-						}
-						var mainCommand = typeof command.commands === 'string' ? command.commands : command.commands[0]
-						if (command.expectedArgs) {
-							var args = command.expectedArgs
-						} else {
-							var args = ''
-						}
-						var { description } = command
-						if (!requiredRolesForField) {
-							var requiredRolesForField = ''
-							var sperator = ''
-						}
-						if (!requiredPermsForField) {
-							var requiredPermsForField = ''
-							var sperator = ''
-						}
-						if (requiredRolesForField || requiredPermsForField) {
-							var requiredRolesAndPerms = `${requiredRolesForField}${sperator}${requiredPermsForField}`
-						}
-						if (permissions && requiredRoles) {
-							if (hasPermission == true || hasRequiredRole == true) {
-								var canRun = 'Yes'
-							} else {
-								var canRun = 'No'
-							}
-						} else {
-							var canRun = 'Yes'
-							var requiredRolesAndPerms = `none`
-						}
-
-					} else {
-						continue
-					}
-				}
-				message.channel.send(embed('default', `\`${mainCommand}\` Command Help`, `Arguments with a \`*\` after them are required`).addFields(
-					{ name: 'Usage', value: `\`\`\`${config.Prefix}${mainCommand} ${args}\`\`\``, inline: false },
-					{ name: 'Description', value: `\`\`\`${description}\`\`\``, inline: false },
-					{ name: 'Required Roles & Permissions', value: `\`\`\`${requiredRolesAndPerms}\`\`\``, inline: true },
-					{ name: 'Accessible', value: `\`\`\`${canRun}\`\`\``, inline: true },
-				))
 			} else {
-				message.channel.send(embed('error', `Unknown Command`, `\`${arguments[0]}\` does not exist`))
+				options.push(`*There is are options for this command.*`)
 			}
+			return await interaction.editReply({
+				embeds: [utils.embed({
+					preset: 'default',
+					title: `\`${command}\` Command Help Menu`,
+					fields: [
+						{ name: `Description`, value: `*${commandFetched.description}*`, inline: true },
+						{ name: `Options`, value: options.join('\n'), inline: false }
+					]
+				})]
+			})
+		} else {
+			let options = []
+			let categories = utils.getCommandCategories()
+			for (category of categories) {
+				options.push({
+					label: utils.title(category),
+					description: `Show ${category} commands`,
+					value: category
+				})
+			}
+			let fields = []
+			for (category of categories) {
+				fields.push({
+					name: utils.title(category),
+					value: `\`${utils.getCommandFiles(category).length}\` commands`,
+					inline: true
+				})
+			}
+
+			return await interaction.editReply({
+				embeds: [utils.embed({
+					preset: 'default',
+					title: 'Help Menu',
+					description: 'Select a category using the select menu below.',
+					fields: fields,
+				})], components: [utils.row([utils.menu({
+					id: 'helpCategory',
+					placeholder: 'Select a category',
+					options: options
+				})])]
+			})
 		}
-	}
+
+	},
 }

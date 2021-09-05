@@ -1,88 +1,107 @@
-require('dotenv').config();
-const APIKey = process.env.EXCHANGE_API_KEY
-
-const axios = require('axios')
-const embed = require('@modules/embed.js')
+const utils = require('@modules/utils')
 const loadYAML = require('@modules/yaml.js')
 const config = loadYAML('config')
-const tools = require('@modules/tools.js')
+const axios = require('axios')
+
+let subreddits = []
+for (subreddit of config.meme.validSubreddits) {
+    subreddits.push({
+        name: subreddit,
+        type: 3,
+        value: subreddit,
+    })
+}
+
+const embedNSFW = utils.embed({
+    preset: 'error',
+    title: `NSFW Post`,
+    description: `The post that was retuned by reddit was marked as NSFW and cannot be displayed in a non-NSFW channel`,
+})
 
 module.exports = {
-    commands: ['meme', 'memes'],
-    expectedArgs: 'subreddit',
-    maxArgs: 1,
-    description: "Fetch memes from reddit",
-    callback: (client, message, arguments) => {
-        const defaultSubreddit = config.Meme.DefaultSubreddit
-        const validSubreddits = config.Meme.ValidSubreddits
-        let subreddit = arguments[0] ? arguments[0].toLowerCase() : defaultSubreddit
-        if (validSubreddits.includes(subreddit)) {
-            let permalink
-            let URL
-            let title
-            let content
-            let created
-            let author
-            let upvotes
-            let comments
-            axios.get(`https://www.reddit.com/r/${subreddit}/random/.json`)
-                .then((data) => {
-                    //console.log(data.data[0].data.children[0].data)
-                    //console.log(data.data[0])
-                    if (data.data[0]) {
-                        if (data.data[0].data.children[0].data.over_18 === false) {
-                            permalink = data.data[0].data.children[0].data.permalink
-                            URL = `https://reddit.com${permalink}`
-                            title = data.data[0].data.children[0].data.title
-                            content = data.data[0].data.children[0].data.url
-                            created = data.data[0].data.children[0].data.created_utc * 1000
-                            author = data.data[0].data.children[0].data.author
-                            upvotes = data.data[0].data.children[0].data.score
-                            comments = data.data[0].data.children[0].data.num_comments
-                            message.channel.send(embed('default', `${title}`, `Here is a meme from \`r/${subreddit}\`\n[**OPEN**](${URL})`)
-                                .setImage(`${content}`)
-                                .setTimestamp(created)
-                                .addFields(
-                                    { name: `Author`, value: `\`\`\`u/${author}\`\`\``, inline: true },
-                                    { name: `Upvotes`, value: `\`\`\`${upvotes}\`\`\``, inline: true },
-                                    { name: `Comments`, value: `\`\`\`${comments}\`\`\``, inline: true },
-                                )
-                            )
-                        } else {
-                            message.channel.send(over18Embed)
-                            return
-                        }
-                    } else {
-                        if (data.data.data.children[0].data.over_18 === false) {
-                            permalink = data.data.data.children[0].data.permalink
-                            URL = `https://reddit.com${permalink}`
-                            title = data.data.data.children[0].data.title
-                            content = data.data.data.children[0].data.url
-                            created = data.data.data.children[0].data.created_utc * 1000
-                            author = data.data.data.children[0].data.author
-                            upvotes = data.data.data.children[0].data.score
-                            comments = data.data.data.children[0].data.num_comments
-                            message.channel.send(embed('default', `${title}`, `Here is a meme from \`r/${subreddit}\`\n[**OPEN**](${URL})`)
-                                .setImage(`${content}`)
-                                .setTimestamp(created)
-                                .addFields(
-                                    { name: `Author`, value: `\`\`\`u/${author}\`\`\``, inline: true },
-                                    { name: `Upvotes`, value: `\`\`\`${upvotes}\`\`\``, inline: true },
-                                    { name: `Comments`, value: `\`\`\`${comments}\`\`\``, inline: true },
-                                )
-                            )
-                        } else {
-                            message.channel.send(over18Embed)
-                            return
-                        }
-                    }
+    name: 'meme',
+    description: 'Fetch memes from reddit',
+    options: [
+        {
+            name: 'subreddit',
+            type: 3,
+            description: 'Subreddit from which to fetch the meme from',
+            choices: subreddits,
+            required: false,
+        },
+    ],
+    async execute(interaction, client) {
+        const subreddit = interaction.options.getString('subreddit') ? interaction.options.getString('subreddit').toLowerCase() : config.meme.defaultSubreddit
+        let permalink
+        let url
+        let title
+        let content
+        let created
+        let author
+        let upvotes
+        let comments
+
+        axios.get(`https://www.reddit.com/r/${subreddit}/random/.json`)
+            .then(async (data) => {
+                if (data.data[0]) {
+                    if (data.data[0].data.children[0].data.over_18 === true && !interaction.channel.nsfw) return await interaction.editReply({ embeds: [embedNSFW] })
+                    permalink = data.data[0].data.children[0].data.permalink
+                    url = `https://reddit.com${permalink}`
+                    title = data.data[0].data.children[0].data.title
+                    content = data.data[0].data.children[0].data.url
+                    created = data.data[0].data.children[0].data.created_utc * 1000
+                    author = data.data[0].data.children[0].data.author
+                    upvotes = data.data[0].data.children[0].data.score
+                    comments = data.data[0].data.children[0].data.num_comments
+                    return await interaction.editReply({
+                        embeds: [utils.embed({
+                            preset: 'default',
+                            title: title,
+                            description: `Here is a meme from \`r/${subreddit}\`\n[**OPEN**](${url})`,
+                            fields: [
+                                { name: `Author`, value: `\`\`\`u/${author}\`\`\``, inline: true },
+                                { name: `Upvotes`, value: `\`\`\`${upvotes}\`\`\``, inline: true },
+                                { name: `Comments`, value: `\`\`\`${comments}\`\`\``, inline: true },
+                            ],
+                            image: content,
+                            timestamp: created,
+                        })]
+                    })
+                } else {
+                    if (data.data.data.children[0].data.over_18 === true && !interaction.channel.nsfw) return await interaction.editReply({ embeds: [embedNSFW] })
+                    permalink = data.data.data.children[0].data.permalink
+                    url = `https://reddit.com${permalink}`
+                    title = data.data.data.children[0].data.title
+                    content = data.data.data.children[0].data.url
+                    created = data.data.data.children[0].data.created_utc * 1000
+                    author = data.data.data.children[0].data.author
+                    upvotes = data.data.data.children[0].data.score
+                    comments = data.data.data.children[0].data.num_comments
+                    return await interaction.editReply({
+                        embeds: [utils.embed({
+                            preset: 'default',
+                            title: title,
+                            description: `Here is a meme from \`r/${subreddit}\`\n[**OPEN**](${url})`,
+                            fields: [
+                                { name: `Author`, value: `\`\`\`u/${author}\`\`\``, inline: true },
+                                { name: `Upvotes`, value: `\`\`\`${upvotes}\`\`\``, inline: true },
+                                { name: `Comments`, value: `\`\`\`${comments}\`\`\``, inline: true },
+                            ],
+                            image: content,
+                            timestamp: created,
+                        })]
+                    })
+                }
+            })
+            .catch(async (err) => {
+                return await interaction.editReply({
+                    embeds: [utils.embed({
+                        preset: 'error',
+                        title: `Unknown`,
+                        description: `An unexpected error occcured, contact an administrator.`,
+                    })]
                 })
-                .catch((err) => {
-                    console.log(tools.consolePrefix('error'), err)
-                    message.channel.send(embed('error', `Unknown`, `An unknown error occured, ask an admin to lok into it if this reapeats itself.`))
-                })
-        } else {
-            message.channel.send(embed('error', `Invalid Subreddit`, `The subreddit \`${subreddit}\` isn't defined as a valid meme subreddit in the config, please contact server admins.\n**Valid options are:**\n\`\`\`${validSubreddits.join(', ')}\`\`\``))
-        }
-    },
+                console.log(utils.prefix('error'), err)
+            })
+    }
 }

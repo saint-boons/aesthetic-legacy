@@ -1,16 +1,18 @@
-const embed = require('@modules/embed.js')
-const loadYAML = require('@modules/yaml.js')
-const config = loadYAML('config')
+const utils = require('@modules/utils')
 
 module.exports = {
-    commands: ['ping', 'latency'],
-	description: "Check the bot's and api latency",
-    callback: (client, message) => {
-		// Calculate bot latency
-        const ping = new Date().getTime() - message.createdTimestamp;
-	    message.channel.send(embed('default', `Ping Results`, `Here are the detailed ping results!`).addFields(
-			{ name: 'Bot Latency', value: `\`\`\`${ping} ms\`\`\``, inline: true },
-			{ name: 'API Latency', value: `\`\`\`${client.ws.ping} ms\`\`\``, inline: true },
-		));
-    },
-}
+	name: 'ping',
+	description: 'Check the bot\'s and api latency',
+	async execute(interaction, client) {
+        const ping = new Date().getTime() - interaction.createdTimestamp
+		return await interaction.editReply({ embeds: [utils.embed({
+			preset: 'default',
+			title: `Ping Results`,
+			description: `Here are the detailed ping results.`,
+			fields: [
+				{ name: 'Bot Latency', value: `\`\`\`${ping} ms\`\`\``, inline: true },
+				{ name: 'API Latency', value: `\`\`\`${client.ws.ping} ms\`\`\``, inline: true },
+			]
+		})] })
+	},
+};
