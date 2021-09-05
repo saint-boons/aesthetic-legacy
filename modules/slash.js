@@ -1,5 +1,5 @@
 const { REST } = require('@discordjs/rest');
-const { Routes } = require('discord-api-types/v9');
+const { Routes } = require('discord-api-types/v8');
 
 module.exports = async (client) => {
     const guilds = await client.guilds.fetch()
