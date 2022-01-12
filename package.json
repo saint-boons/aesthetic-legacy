@@ -23,7 +23,7 @@
     "better-sqlite3": "^7.4.3",
     "chalk": "^4.1.2",
     "discord.js": "^12.5.1",
-    "dotenv": "^10.0.0",
+    "dotenv": "^11.0.0",
     "eslint": "^7.32.0",
     "js-yaml": "^4.1.0",
     "module-alias": "^2.2.2",
