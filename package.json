@@ -22,7 +22,7 @@
     "axios": "^0.21.4",
     "better-sqlite3": "^7.4.3",
     "chalk": "^4.1.2",
-    "discord.js": "^12.5.1",
+    "discord.js": "^13.8.0",
     "dotenv": "^10.0.0",
     "eslint": "^7.32.0",
     "js-yaml": "^4.1.0",
